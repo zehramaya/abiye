@@ -54,6 +54,7 @@ export const ViewModeNav: React.FC<Props> = ({ shootMode, onShootModeChange }) =
     if (location.pathname === "/back") return "back";
     if (location.pathname === "/closeup") return "closeup";
     if (location.pathname === "/location") return "location";
+    if (location.pathname === "/location-closeup") return "location-closeup";
     return "front";
   };
 
@@ -64,7 +65,7 @@ export const ViewModeNav: React.FC<Props> = ({ shootMode, onShootModeChange }) =
     if (mode === "location") {
       navigate("/location");
     } else {
-      if (location.pathname === "/location") {
+      if (location.pathname === "/location" || location.pathname === "/location-closeup") {
         navigate("/");
       }
     }
@@ -264,20 +265,101 @@ export const ViewModeNav: React.FC<Props> = ({ shootMode, onShootModeChange }) =
           </motion.div>
         )}
 
-        {/* ─── Location Info ─── */}
+        {/* ─── Location Sub-Tabs ─── */}
         {shootMode === "location" && (
           <motion.div
-            key="location-info"
+            key="location-tabs"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25 }}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#59c5a0]/[0.04] border border-[#59c5a0]/10"
+            className="flex flex-col gap-1.5"
           >
-            <div className="w-1.5 h-1.5 rounded-full bg-[#59c5a0] flex-shrink-0 animate-pulse" />
-            <p className="text-[9px] text-[#59c5a0]/50 font-medium leading-relaxed">
-              Mekan fotoğrafı ile dış mekan editoryal çekimi
-            </p>
+            {/* Mekan Çekim */}
+            <motion.button
+              whileHover={{ x: 3 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate("/location")}
+              className={`relative flex items-center gap-2.5 px-3 py-2 rounded-lg text-left transition-all duration-300 overflow-hidden
+                ${activeKey === "location"
+                  ? "bg-white/[0.04] border border-white/[0.08]"
+                  : "bg-transparent border border-transparent hover:bg-white/[0.02] hover:border-white/[0.04]"
+                }`}
+            >
+              {activeKey === "location" && (
+                <motion.div
+                  layoutId="view-nav-active"
+                  className="absolute left-0 top-2 bottom-2 w-[2px] rounded-full bg-[#59c5a0]"
+                  transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                />
+              )}
+              <div
+                className={`w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 transition-all duration-300
+                  ${activeKey === "location" ? "text-black" : "bg-white/[0.03] text-white/20"}`}
+                style={activeKey === "location" ? {
+                  background: "linear-gradient(135deg, #59c5a0, #59c5a0cc)",
+                  boxShadow: "0 4px 12px rgba(89, 197, 160, 0.3)",
+                } : {}}
+              >
+                <MapPin size={16} strokeWidth={1.8} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className={`text-[10px] font-bold tracking-wider transition-colors duration-300
+                  ${activeKey === "location" ? "text-white" : "text-white/30"}`}>
+                  Mekan Çekim
+                </p>
+                <p className={`text-[8px] font-bold uppercase tracking-[0.2em] transition-colors duration-300
+                  ${activeKey === "location" ? "text-[#59c5a0]/60" : "text-white/10"}`}>
+                  Dış Mekan Editoryal
+                </p>
+              </div>
+              {activeKey === "location" && (
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-1.5 h-1.5 rounded-full bg-[#59c5a0] flex-shrink-0" />
+              )}
+            </motion.button>
+
+            {/* Yakın Plan (Outdoor Background) */}
+            <motion.button
+              whileHover={{ x: 3 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate("/location-closeup")}
+              className={`relative flex items-center gap-2.5 px-3 py-2 rounded-lg text-left transition-all duration-300 overflow-hidden
+                ${activeKey === "location-closeup"
+                  ? "bg-white/[0.04] border border-white/[0.08]"
+                  : "bg-transparent border border-transparent hover:bg-white/[0.02] hover:border-white/[0.04]"
+                }`}
+            >
+              {activeKey === "location-closeup" && (
+                <motion.div
+                  layoutId="view-nav-active"
+                  className="absolute left-0 top-2 bottom-2 w-[2px] rounded-full bg-[#a0c559]"
+                  transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                />
+              )}
+              <div
+                className={`w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 transition-all duration-300
+                  ${activeKey === "location-closeup" ? "text-black" : "bg-white/[0.03] text-white/20"}`}
+                style={activeKey === "location-closeup" ? {
+                  background: "linear-gradient(135deg, #a0c559, #a0c559cc)",
+                  boxShadow: "0 4px 12px rgba(160, 197, 89, 0.3)",
+                } : {}}
+              >
+                <Focus size={16} strokeWidth={1.8} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className={`text-[10px] font-bold tracking-wider transition-colors duration-300
+                  ${activeKey === "location-closeup" ? "text-white" : "text-white/30"}`}>
+                  Yakın Plan
+                </p>
+                <p className={`text-[8px] font-bold uppercase tracking-[0.2em] transition-colors duration-300
+                  ${activeKey === "location-closeup" ? "text-[#a0c559]/60" : "text-white/10"}`}>
+                  Dış Mekan Arka Plan
+                </p>
+              </div>
+              {activeKey === "location-closeup" && (
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-1.5 h-1.5 rounded-full bg-[#a0c559] flex-shrink-0" />
+              )}
+            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>

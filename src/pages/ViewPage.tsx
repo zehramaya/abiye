@@ -82,7 +82,7 @@ export const ViewPage: React.FC<ViewPageProps> = ({
                 color: `${accentColor}`,
               }}
             >
-              {viewMode === "front" ? "📸 Ön Çekim Modu" : viewMode === "back" ? "🔄 Arka Çekim Modu" : viewMode === "location" ? "📍 Mekan Çekim Modu" : "🔍 Yakın Plan Modu"}
+              {viewMode === "front" ? "📸 Ön Çekim Modu" : viewMode === "back" ? "🔄 Arka Çekim Modu" : viewMode === "location" ? "📍 Mekan Çekim Modu" : viewMode === "location-closeup" ? "🌿 Dış Mekan Arka Plan" : "🔍 Yakın Plan Modu"}
             </div>
           </motion.div>
         </div>

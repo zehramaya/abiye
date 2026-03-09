@@ -7,6 +7,7 @@ import { ViewModeNav } from "./components/ViewModeNav";
 import { ViewPage } from "./pages/ViewPage";
 import { ResultGallery } from "./components/ResultGallery";
 import { generateBridalImage, AIModelId, ViewMode } from "./services/falApi";
+import logoUrl from "./logo.jpg";
 
 interface GenerationResult {
   id: string;
@@ -66,6 +67,7 @@ const App: React.FC = () => {
     if (location.pathname === "/back") return "back";
     if (location.pathname === "/closeup") return "closeup";
     if (location.pathname === "/location") return "location";
+    if (location.pathname === "/location-closeup") return "location-closeup";
     return "front";
   };
 
@@ -78,9 +80,9 @@ const App: React.FC = () => {
 
   // Sync shootMode with route
   useEffect(() => {
-    if (location.pathname === "/location") {
+    if (location.pathname === "/location" || location.pathname === "/location-closeup") {
       setShootMode("location");
-    } else if (shootMode === "location" && location.pathname !== "/location") {
+    } else if (shootMode === "location" && location.pathname !== "/location" && location.pathname !== "/location-closeup") {
       setShootMode("studio");
     }
   }, [location.pathname]);
@@ -144,6 +146,7 @@ const App: React.FC = () => {
         back: "Arka",
         closeup: "Yakın",
         location: "Mekan",
+        "location-closeup": "Dış Yakın",
       };
 
       const newResult: GenerationResult = {
@@ -173,18 +176,28 @@ const App: React.FC = () => {
 
       {/* ─── Sidebar Control Panel ─── */}
       <aside className="sidebar">
-        <div className="sidebar-header">
+        <div className="sidebar-header flex flex-col items-center justify-center pt-12 pb-2">
           <motion.div
-            whileHover={{ rotate: 5, scale: 1.05 }}
-            className="w-11 h-11 bg-gradient-to-br from-[#c5a059] to-[#b8860b] rounded-xl flex items-center justify-center text-black shadow-lg shadow-[#c5a059]/20"
+            whileHover={{ scale: 1.02 }}
+            style={{ width: '100%', height: '70px', position: 'relative', overflow: 'hidden' }}
           >
-            <Gem size={20} strokeWidth={2.5} />
+            <img 
+              src={logoUrl} 
+              alt="FashionMaster" 
+              className="opacity-90 transition-opacity hover:opacity-100"
+              style={{
+                position: 'absolute',
+                top: '55%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '240px',
+                maxWidth: 'none',
+                mixBlendMode: 'screen'
+              }}
+            />
           </motion.div>
-          <div>
-            <h1 className="font-display text-xl font-bold tracking-tight">
-              Fashion<span className="text-[#c5a059]">Master</span>
-            </h1>
-            <p className="text-[10px] text-white/25 font-bold uppercase tracking-[0.25em]">Haute Couture Stüdyo</p>
+          <div className="mt-1 text-center">
+            <p className="text-[9px] text-white/30 font-bold uppercase tracking-[0.3em]">Haute Couture Stüdyo</p>
           </div>
         </div>
 
@@ -208,7 +221,7 @@ const App: React.FC = () => {
               <div className="w-4 h-4 rounded-md bg-[#c5a059]/10 flex items-center justify-center">
                 <LayoutGrid size={10} className="text-[#c5a059]" />
               </div>
-              <h2 className="font-display text-[9px] font-bold text-white/35 uppercase tracking-[0.25em]">Yaratıcı Varlıklar</h2>
+              <h2 className="font-display text-[9px] font-bold text-white/35 uppercase tracking-[0.25em]">Kaynak Girişi</h2>
             </div>
             <div className="space-y-4">
               <ImageUploader label="Giysi Referansı" onUpload={setDressUrl} isLoading={isLoading} />
@@ -355,6 +368,23 @@ const App: React.FC = () => {
                 isLoading={isLoading}
                 onGenerate={handleGenerate}
                 canGenerate={!!dressUrl && !!modelUrl && !!locationUrl}
+                progressMsg={progressMsg}
+              />
+            }
+          />
+          <Route
+            path="/location-closeup"
+            element={
+              <ViewPage
+                title="Dış Mekan Yakın Plan"
+                subtitle="Outdoor Arka Plan Üretici"
+                accentColor="#a0c559"
+                viewMode="location-closeup"
+                engine={engine}
+                onSelectEngine={setEngine}
+                isLoading={isLoading}
+                onGenerate={handleGenerate}
+                canGenerate={true}
                 progressMsg={progressMsg}
               />
             }

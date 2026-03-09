@@ -202,7 +202,7 @@ export const EngineSelector: React.FC<Props> = ({ selected, onSelect, isLoading,
         >
           <AlertTriangle size={12} className="text-amber-400/60 flex-shrink-0" />
           <p className="text-[9px] text-amber-400/50 font-medium leading-relaxed">
-            {viewMode === "back" ? "Arka Görünüm" : viewMode === "location" ? "Mekan Çekimi" : "Yakın Plan"} modu yalnızca <strong className="text-amber-400/80">ANA PROTOKOL</strong> motoru ile çalışır. Diğer motorlar metin prompt'u desteklemez.
+            {viewMode === "back" ? "Arka Görünüm" : viewMode === "location" ? "Mekan Çekimi" : viewMode === "location-closeup" ? "Dış Mekan Yakın Plan" : "Yakın Plan"} modu yalnızca <strong className="text-amber-400/80">ANA PROTOKOL</strong> motoru ile çalışır. Diğer motorlar metin prompt'u desteklemez.
           </p>
         </motion.div>
       )}

@@ -18,22 +18,30 @@ interface Props {
 
 export const ResultGallery: React.FC<Props> = ({ results, isLoading }) => {
   const [selectedImage, setSelectedImage] = useState<GenerationResult | null>(null);
+  const [isZoomed, setIsZoomed] = useState<boolean>(false);
 
-  const downloadImage = (url: string, filename: string) => {
-    fetch(url)
-      .then(resp => resp.blob())
-      .then(blob => {
-        const blobUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = blobUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(blobUrl);
-        document.body.removeChild(a);
-      })
-      .catch(() => window.open(url));
+  const downloadImage = async (url: string, filename: string) => {
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Origin': window.location.origin
+        }
+      });
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.warn("CORS download failed, opening in new tab instead", error);
+      window.open(url, '_blank');
+    }
   };
 
   return (
@@ -45,6 +53,20 @@ export const ResultGallery: React.FC<Props> = ({ results, isLoading }) => {
             <History size={11} className="text-[#c5a059]/60" />
           </div>
           <h3 className="font-display text-xs font-bold text-white/30 uppercase tracking-[0.15em]">Arşiv</h3>
+          
+          {results.length > 0 && (
+            <motion.button
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => downloadImage(results[0].url, `fashionmaster-latest-${results[0].id}.png`)}
+              className="ml-2 p-1.5 rounded-lg bg-[#c5a059]/10 border border-[#c5a059]/20 text-[#c5a059] hover:bg-[#c5a059]/20 transition-all"
+              title="Son Çalışmayı İndir"
+            >
+              <Download size={12} />
+            </motion.button>
+          )}
         </div>
         <motion.div
           key={results.length}
@@ -133,7 +155,7 @@ export const ResultGallery: React.FC<Props> = ({ results, isLoading }) => {
                   </div>
                   <div className="flex items-center gap-1">
                     <Zap size={7} className="text-[#c5a059]/50" fill="currentColor" />
-                    <span className="text-[7px] font-bold text-[#c5a059]/40 tracking-wider uppercase">{result.viewMode === 'back' ? 'Arka' : result.viewMode === 'closeup' ? 'Detay' : result.viewMode === 'location' ? 'Mekan' : 'Ön'} Çekim</span>
+                    <span className="text-[7px] font-bold text-[#c5a059]/40 tracking-wider uppercase">{result.viewMode === 'back' ? 'Arka' : result.viewMode === 'closeup' ? 'Detay' : result.viewMode === 'location' ? 'Mekan' : result.viewMode === 'location-closeup' ? 'Dış Yakın' : 'Ön'} Çekim</span>
                   </div>
                 </div>
 
@@ -188,7 +210,7 @@ export const ResultGallery: React.FC<Props> = ({ results, isLoading }) => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             className="fixed inset-0 bg-black/95 z-[99999] flex items-center justify-center p-8 md:p-20 backdrop-blur-2xl"
-            onClick={() => setSelectedImage(null)}
+            onClick={() => { setSelectedImage(null); setIsZoomed(false); }}
           >
             <motion.div
               initial={{ scale: 0.92, y: 30, opacity: 0 }}
@@ -209,12 +231,18 @@ export const ResultGallery: React.FC<Props> = ({ results, isLoading }) => {
               </motion.button>
 
               {/* Image Container */}
-              <div className="relative w-full flex justify-center bg-black/30 p-3 border border-white/[0.04] backdrop-blur-xl rounded-3xl overflow-hidden">
+              <div 
+                className="relative w-full flex justify-center bg-black/30 p-3 border border-white/[0.04] backdrop-blur-xl rounded-3xl overflow-hidden cursor-pointer"
+                onClick={(e) => { e.stopPropagation(); setIsZoomed(!isZoomed); }}
+              >
                 <div className="absolute inset-0 bg-[#c5a059]/3 blur-[80px] pointer-events-none" />
-                <img
+                <motion.img
+                  layout
                   src={selectedImage.url}
                   alt="Tam Ekran"
-                  className="max-h-[72vh] object-contain rounded-2xl shadow-2xl relative z-10"
+                  animate={{ scale: isZoomed ? 2 : 1 }}
+                  transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                  className={`object-contain rounded-2xl shadow-2xl relative z-10 ${isZoomed ? "max-h-[150vh] cursor-zoom-out" : "max-h-[72vh] cursor-zoom-in"}`}
                 />
               </div>
 
@@ -233,6 +261,19 @@ export const ResultGallery: React.FC<Props> = ({ results, isLoading }) => {
                 </div>
 
                 <div className="flex items-center gap-4">
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => setIsZoomed(!isZoomed)}
+                    className={`flex items-center gap-2 text-xs py-3 px-6 rounded-xl border transition-all ${
+                      isZoomed 
+                        ? 'bg-[#c5a059]/20 border-[#c5a059]/40 text-[#c5a059]' 
+                        : 'bg-white/[0.03] hover:bg-white/[0.08] border-white/[0.06] text-white/60 hover:text-white'
+                    }`}
+                  >
+                    <Maximize2 size={16} />
+                    {isZoomed ? "Uzaklaştır" : "Yakın Plan"}
+                  </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}

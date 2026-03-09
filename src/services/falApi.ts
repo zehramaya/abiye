@@ -1,8 +1,8 @@
 import { fal } from "@fal-ai/client";
-import { FRONT_VIEW_PROMPT, BACK_VIEW_PROMPT, CLOSEUP_VIEW_PROMPT, LOCATION_VIEW_PROMPT } from "./prompt";
+import { FRONT_VIEW_PROMPT, BACK_VIEW_PROMPT, CLOSEUP_VIEW_PROMPT, LOCATION_VIEW_PROMPT, OUTDOOR_BACKGROUND_PROMPT } from "./prompt";
 
 export type AIModelId = "fal-ai/fashn/tryon/v1.5" | "fal-ai/idm-vton" | "fal-ai/nano-banana-pro/edit";
-export type ViewMode = "front" | "back" | "closeup" | "location";
+export type ViewMode = "front" | "back" | "closeup" | "location" | "location-closeup";
 
 export interface GenerationParams {
   modelId: AIModelId;
@@ -23,6 +23,8 @@ const getPromptForView = (viewMode: ViewMode): string => {
       return CLOSEUP_VIEW_PROMPT;
     case "location":
       return LOCATION_VIEW_PROMPT;
+    case "location-closeup":
+      return OUTDOOR_BACKGROUND_PROMPT;
     case "front":
     default:
       return FRONT_VIEW_PROMPT;
@@ -37,6 +39,8 @@ const getDescriptionForView = (viewMode: ViewMode): string => {
       return "Elegant professional bridal couture transfer — EXTREME CLOSE-UP DETAIL. Macro photography of dress fabric, lace patterns, beadwork, embroidery. Tight crop on bodice/torso. 50mm macro lens style.";
     case "location":
       return "Elegant professional bridal couture transfer onto model — ON-LOCATION SHOOT. Place the dressed model naturally into the venue/location environment. Match lighting, perspective, and atmosphere of the location.";
+    case "location-closeup":
+      return "Create an outdoor luxury fashion photography background for waist-up bridal portrait. No people. Historic European castle with botanical garden. Cinematic depth of field.";
     case "front":
     default:
       return "Elegant professional bridal couture transfer onto model";
@@ -78,7 +82,9 @@ export const generateBridalImage = async (params: GenerationParams, onUpdate?: (
   }
 
   // Nano Banana Pro — use view-specific prompt
-  const imageUrls = [garmentImageUrl, modelImageUrl];
+  const imageUrls = viewMode === "location-closeup"
+    ? []
+    : [garmentImageUrl, modelImageUrl];
   if (viewMode === "location" && locationImageUrl) {
     imageUrls.push(locationImageUrl);
   }
