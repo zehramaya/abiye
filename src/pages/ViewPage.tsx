@@ -2,6 +2,7 @@ import React from "react";
 import { Play, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { EngineSelector } from "../components/EngineSelector";
+import { ImageUploader } from "../components/ImageUploader";
 import { AIModelId, ViewMode } from "../services/falApi";
 
 interface ViewPageProps {
@@ -9,8 +10,9 @@ interface ViewPageProps {
   subtitle: string;
   accentColor: string;
   viewMode: ViewMode;
-  engine: AIModelId;
-  onSelectEngine: (id: AIModelId) => void;
+  onDressUrlChange: (url: string) => void;
+  onModelUrlChange: (url: string) => void;
+  onLocationUrlChange?: (url: string) => void;
   isLoading: boolean;
   onGenerate: () => void;
   canGenerate: boolean;
@@ -22,8 +24,9 @@ export const ViewPage: React.FC<ViewPageProps> = ({
   subtitle,
   accentColor,
   viewMode,
-  engine,
-  onSelectEngine,
+  onDressUrlChange,
+  onModelUrlChange,
+  onLocationUrlChange,
   isLoading,
   onGenerate,
   canGenerate,
@@ -87,17 +90,59 @@ export const ViewPage: React.FC<ViewPageProps> = ({
           </motion.div>
         </div>
 
-        {/* Engine & Generate */}
-        <div className="space-y-6">
-          <EngineSelector selected={engine} onSelect={onSelectEngine} isLoading={isLoading} viewMode={viewMode} />
+        {/* Image Assets Grid (Formerly sidebar, now main stage as per mockup) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-2">
+            <motion.div 
+               initial={{ opacity: 0, x: -20 }}
+               animate={{ opacity: 1, x: 0 }}
+               transition={{ delay: 0.6 }}
+               className="space-y-3"
+            >
+                <div className="flex items-center gap-2 px-1">
+                   <div className="w-1.5 h-1.5 rounded-full bg-[#c5a059]" />
+                   <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Tasarım Girişi</span>
+                </div>
+                <ImageUploader label="Giysi Referansı" onUpload={onDressUrlChange} isLoading={isLoading} />
+            </motion.div>
 
+            <motion.div 
+               initial={{ opacity: 0, x: 20 }}
+               animate={{ opacity: 1, x: 0 }}
+               transition={{ delay: 0.7 }}
+               className="space-y-3"
+            >
+                <div className="flex items-center gap-2 px-1">
+                   <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+                   <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Manken Girişi</span>
+                </div>
+                <ImageUploader label="Model Konsepti" onUpload={onModelUrlChange} isLoading={isLoading} />
+            </motion.div>
+
+            {/* Location input conditionally shown in location views */}
+            {(viewMode === "location" || viewMode === "location-closeup") && (
+                <motion.div 
+                   initial={{ opacity: 0, y: 20 }}
+                   animate={{ opacity: 1, y: 0 }}
+                   className="md:col-span-2 space-y-3 pt-2"
+                >
+                    <div className="flex items-center gap-2 px-1">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                        <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Sahne Girişi</span>
+                    </div>
+                    <ImageUploader label="Mekan Fotoğrafı" onUpload={onLocationUrlChange!} isLoading={isLoading} />
+                </motion.div>
+            )}
+        </div>
+
+        {/* Action Button & Progress */}
+        <div className="space-y-6 pt-4">
           <div className="space-y-4">
             <motion.button
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
               onClick={onGenerate}
               disabled={isLoading || !canGenerate}
-              className="w-full btn-primary disabled:opacity-20 disabled:grayscale disabled:cursor-not-allowed disabled:transform-none group text-sm"
+              className="w-full btn-primary disabled:opacity-20 disabled:grayscale disabled:cursor-not-allowed group text-base py-5"
             >
               <div className="flex items-center justify-center gap-4">
                 {isLoading ? (

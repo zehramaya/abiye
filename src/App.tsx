@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Key, Settings2, X, Zap, LayoutGrid, Shield, Gem, ArrowRight } from "lucide-react";
+import { Key, Settings2, X, Zap, LayoutGrid, Shield, Gem, ArrowRight, Layers, Upload, SlidersHorizontal, Sparkles, Grid3X3 } from "lucide-react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ImageUploader } from "./components/ImageUploader";
-import { ViewModeNav } from "./components/ViewModeNav";
+import { ShootModeToggle, ViewSubTabs } from "./components/ViewModeNav";
 import { ViewPage } from "./pages/ViewPage";
 import { ResultGallery } from "./components/ResultGallery";
 import { fal } from "@fal-ai/client";
@@ -175,118 +175,148 @@ const App: React.FC = () => {
     <div className="app-container">
       {/* ─── Sidebar Control Panel ─── */}
       <aside className="sidebar">
-        <div className="sidebar-header flex flex-col items-center justify-center pt-12 pb-2">
+        <div className="sidebar-header flex flex-col items-center justify-center pt-6 pb-1">
           <motion.div
             whileHover={{ scale: 1.02 }}
-            style={{ width: '100%', height: '70px', position: 'relative', overflow: 'hidden' }}
+            style={{ width: '100%', height: '50px', position: 'relative', overflow: 'hidden' }}
           >
-            <img 
-              src={logoUrl} 
-              alt="FashionMaster" 
+            <img
+              src={logoUrl}
+              alt="FashionMaster"
               className="opacity-90 transition-opacity hover:opacity-100"
               style={{
                 position: 'absolute',
                 top: '55%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
-                width: '240px',
+                width: '200px',
                 maxWidth: 'none',
                 mixBlendMode: 'screen'
               }}
             />
           </motion.div>
-          <div className="mt-1 text-center">
-            <p className="text-[9px] text-white/30 font-bold uppercase tracking-[0.3em]">Haute Couture Stüdyo</p>
+          <div className="text-center">
+            <p className="text-[8px] text-white/25 font-bold uppercase tracking-[0.3em]">Haute Couture Stüdyo</p>
           </div>
         </div>
 
-        <div className="sidebar-content scroll-area space-y-4">
-          {/* View Mode Navigation */}
-          <section>
-            <div className="flex items-center gap-2 mb-3">
-              <h2 className="font-display text-[10px] font-semibold text-white/50 uppercase tracking-[0.15em]">Çekim Modu</h2>
+        <div className="sidebar-content scroll-area space-y-2">
+          {/* Card 1: Çekim Modu Toggle */}
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.05 }}
+            className="sidebar-card"
+          >
+            <div className="section-header">
+              <div className="section-header-icon bg-[#c5a059]/10">
+                <Layers size={12} className="text-[#c5a059]" />
+              </div>
+              <h2 className="section-header-title">Çekim Modu</h2>
             </div>
-            <ViewModeNav shootMode={shootMode} onShootModeChange={setShootMode} />
-          </section>
+            <ShootModeToggle shootMode={shootMode} onShootModeChange={setShootMode} />
+          </motion.section>
 
-          <div className="section-divider" />
-
-          {/* Creative Assets Section */}
-          <section>
-            <div className="flex items-center gap-2 mb-4">
-              <h2 className="font-display text-[10px] font-semibold text-white/50 uppercase tracking-[0.15em]">Kaynak Girişi</h2>
+          {/* Card 2: Görünüm Seçimi (Sub-Tabs) */}
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="sidebar-card"
+          >
+            <div className="section-header">
+              <div className="section-header-icon bg-blue-500/10">
+                <Grid3X3 size={12} className="text-blue-400" />
+              </div>
+              <h2 className="section-header-title">Görünüm Seçimi</h2>
             </div>
-            <div className="space-y-4">
-              <ImageUploader label="Giysi Referansı" onUpload={setDressUrl} isLoading={isLoading} />
-              <ImageUploader label="Model Konsepti" onUpload={setModelUrl} isLoading={isLoading} />
+            <ViewSubTabs shootMode={shootMode} />
+          </motion.section>
 
-              {/* Location Image Uploader - only in location mode */}
-              <AnimatePresence>
-                {isLocationMode && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3, ease: [0.2, 0.8, 0.2, 1] }}
+          {/* Card 3: AI İşlem Düğümleri (Düğüm Seçimi) */}
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.15 }}
+            className="sidebar-card"
+          >
+            <div className="section-header">
+              <div className="section-header-icon bg-amber-500/10">
+                <Settings2 size={12} className="text-amber-400" />
+              </div>
+              <h2 className="section-header-title">İşlem Düğümü</h2>
+            </div>
+            <div className="space-y-3">
+               <div className="p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                  <select 
+                    value={engine}
+                    onChange={(e) => setEngine(e.target.value as AIModelId)}
+                    className="w-full bg-transparent text-[11px] font-medium text-white/80 outline-none cursor-pointer"
                   >
-                    <div className="relative">
-                      {/* Accent border */}
-                      <div className="absolute -left-[1px] top-2 bottom-2 w-[2px] rounded-full bg-[#59c5a0]/30" />
-                      <div className="pl-3">
-                        <ImageUploader label="Mekan Fotoğrafı" onUpload={setLocationUrl} isLoading={isLoading} />
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                    <option value="fal-ai/nano-banana-pro/edit" className="bg-[#121212]">ANA PROTOKOL v.01 (FAL)</option>
+                    <option value="fal-ai/fashn/tryon/v1.5" className="bg-[#121212]">FASHN ÇEKİRDEK 1.5</option>
+                    <option value="fal-ai/idm-vton" className="bg-[#121212]">IDM HİBRİT</option>
+                  </select>
+               </div>
+               <p className="text-[8px] text-white/20 px-1 italic">Not: Görünüm moduna göre otomatik optimize edilir.</p>
             </div>
-          </section>
+          </motion.section>
 
-          <div className="section-divider" />
-
-          {/* Parameters Section */}
-          <section>
-            <div className="flex items-center gap-2 mb-4">
-              <h2 className="font-display text-[10px] font-semibold text-white/50 uppercase tracking-[0.15em]">Parametreler</h2>
+          {/* Card 4: Parametreler (altta) */}
+          <motion.section
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="sidebar-card"
+          >
+            <div className="section-header">
+              <div className="section-header-icon bg-cyan-500/10">
+                <SlidersHorizontal size={12} className="text-cyan-400" />
+              </div>
+              <h2 className="section-header-title">Parametreler</h2>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {/* Quality Badge */}
-              <div className="space-y-2">
-                <label className="text-[11px] font-medium text-white/40 mb-1 block pl-1">Çıktı Kalitesi</label>
-                <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-white/[0.02] border border-white/[0.05]">
-                  <div className="w-2 h-2 rounded-full bg-white" />
-                  <span className="text-[11px] font-medium text-white tracking-widest">4K Ultra</span>
-                  <span className="text-[10px] text-white/40 ml-auto">Sabit</span>
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-semibold text-white/35 block pl-0.5 uppercase tracking-[0.12em]">Çıktı Kalitesi</label>
+                <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-gradient-to-r from-white/[0.03] to-white/[0.01] border border-white/[0.06] relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#c5a059]/[0.03] to-transparent pointer-events-none" />
+                  <div className="relative flex items-center gap-1.5">
+                    <Sparkles size={10} className="text-[#c5a059]/60" />
+                    <span className="text-[10px] font-semibold text-white/90 tracking-wider">4K Ultra</span>
+                  </div>
+                  <span className="text-[8px] text-[#c5a059]/50 ml-auto font-bold uppercase tracking-widest relative">Sabit</span>
                 </div>
               </div>
 
               {/* Seed Input */}
-              <div className="space-y-2">
-                <label className="text-[11px] font-medium text-white/40 mb-1 block pl-1">Sabit Tohum (Seed)</label>
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-semibold text-white/35 block pl-0.5 uppercase tracking-[0.12em]">Sabit Tohum (Seed)</label>
                 <div className="relative">
                   <input
                     type="number"
                     placeholder="Rastgele Seçim"
                     value={seed || ""}
                     onChange={(e) => setSeed(e.target.value ? parseInt(e.target.value) : undefined)}
-                    className="input-modern pr-10"
+                    className="input-modern pr-10 !py-2.5 !text-[12px]"
                   />
-                  <Zap size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30" />
+                  <Zap size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#c5a059]/30" />
                 </div>
               </div>
             </div>
-          </section>
+          </motion.section>
         </div>
 
         {/* System Access Button */}
-        <div className="p-4 border-t border-white/[0.04]">
+        <div className="px-3 py-2.5 relative z-[1]" style={{ borderTop: '1px solid rgba(255,255,255,0.04)' }}>
           <motion.button
             whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.99 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setShowSettings(true)}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-white/[0.02] border border-white/[0.05] text-[11px] font-medium text-white/60 hover:bg-white/[0.05] hover:text-white transition-all duration-200"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-gradient-to-r from-white/[0.03] to-white/[0.01] border border-white/[0.06] text-[9px] font-semibold text-white/50 hover:text-white/80 hover:border-white/[0.1] hover:from-white/[0.05] hover:to-white/[0.02] transition-all duration-300 uppercase tracking-[0.15em] relative overflow-hidden group"
           >
-            <Shield size={14} /> Sistem Erişimi
+            <div className="absolute inset-0 bg-gradient-to-r from-[#c5a059]/0 via-[#c5a059]/[0.03] to-[#c5a059]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <Shield size={11} className="relative" /> <span className="relative">Sistem Erişimi</span>
           </motion.button>
         </div>
       </aside>
@@ -302,8 +332,8 @@ const App: React.FC = () => {
                 subtitle="Editoryal Ön Çekim Modu"
                 accentColor="#c5a059"
                 viewMode="front"
-                engine={engine}
-                onSelectEngine={setEngine}
+                onDressUrlChange={setDressUrl}
+                onModelUrlChange={setModelUrl}
                 isLoading={isLoading}
                 onGenerate={handleGenerate}
                 canGenerate={!!dressUrl && !!modelUrl}
@@ -319,8 +349,8 @@ const App: React.FC = () => {
                 subtitle="Kilitli Arka Çekim Modu"
                 accentColor="#59a0c5"
                 viewMode="back"
-                engine={engine}
-                onSelectEngine={setEngine}
+                onDressUrlChange={setDressUrl}
+                onModelUrlChange={setModelUrl}
                 isLoading={isLoading}
                 onGenerate={handleGenerate}
                 canGenerate={!!dressUrl && !!modelUrl}
@@ -336,8 +366,8 @@ const App: React.FC = () => {
                 subtitle="Makro Detay Çekim Modu"
                 accentColor="#a059c5"
                 viewMode="closeup"
-                engine={engine}
-                onSelectEngine={setEngine}
+                onDressUrlChange={setDressUrl}
+                onModelUrlChange={setModelUrl}
                 isLoading={isLoading}
                 onGenerate={handleGenerate}
                 canGenerate={!!dressUrl && !!modelUrl}
@@ -353,8 +383,9 @@ const App: React.FC = () => {
                 subtitle="Dış Mekan Editoryal Modu"
                 accentColor="#59c5a0"
                 viewMode="location"
-                engine={engine}
-                onSelectEngine={setEngine}
+                onDressUrlChange={setDressUrl}
+                onModelUrlChange={setModelUrl}
+                onLocationUrlChange={setLocationUrl}
                 isLoading={isLoading}
                 onGenerate={handleGenerate}
                 canGenerate={!!dressUrl && !!modelUrl && !!locationUrl}
@@ -370,8 +401,9 @@ const App: React.FC = () => {
                 subtitle="Outdoor Arka Plan Üretici"
                 accentColor="#a0c559"
                 viewMode="location-closeup"
-                engine={engine}
-                onSelectEngine={setEngine}
+                onDressUrlChange={setDressUrl}
+                onModelUrlChange={setModelUrl}
+                onLocationUrlChange={setLocationUrl}
                 isLoading={isLoading}
                 onGenerate={handleGenerate}
                 canGenerate={!!dressUrl && !!modelUrl && !!locationUrl}

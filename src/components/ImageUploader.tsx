@@ -65,19 +65,19 @@ export const ImageUploader: React.FC<Props> = ({ label, onUpload, isLoading = fa
   };
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex justify-between items-center px-1">
-        <label className="text-[11px] font-medium tracking-[0.1em] text-white/40 uppercase">{label}</label>
+    <div className="flex flex-col gap-1.5">
+      <div className="flex justify-between items-center px-0.5">
+        <label className="text-[9px] font-semibold tracking-[0.12em] text-white/35 uppercase">{label}</label>
         <AnimatePresence>
           {preview && !localLoading && (
             <motion.div
               initial={{ opacity: 0, scale: 0, x: 10 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0 }}
-              className="flex items-center gap-1.5"
+              className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-400/10 border border-emerald-400/20"
             >
-              <div className="w-1 h-1 rounded-full bg-emerald-400" />
-              <span className="text-[8px] font-bold text-emerald-400/70 uppercase tracking-widest">Hazır</span>
+              <div className="w-1 h-1 rounded-full bg-emerald-400 shadow-[0_0_4px_rgba(52,211,153,0.5)]" />
+              <span className="text-[6px] font-bold text-emerald-400/80 uppercase tracking-widest">Hazır</span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -85,9 +85,9 @@ export const ImageUploader: React.FC<Props> = ({ label, onUpload, isLoading = fa
 
       <motion.div
         whileHover={!preview ? { scale: 1.01 } : {}}
-        className={`dropzone-container group h-[180px] flex items-center justify-center relative overflow-hidden card-glass
-          ${preview ? 'border-solid border-white/10 bg-black/40' : ''}
-          ${isDragging ? 'border-white/30 bg-white/5 scale-[1.02]' : ''}
+        className={`dropzone-container group h-[100px] flex items-center justify-center relative overflow-hidden
+          ${preview ? 'border-solid !border-white/[0.08] !bg-black/50' : ''}
+          ${isDragging ? '!border-[#c5a059]/30 !bg-[#c5a059]/[0.03] scale-[1.02]' : ''}
         `}
         onClick={() => !localLoading && !isLoading && fileInputRef.current?.click()}
         onDragOver={handleDragOver}
@@ -111,36 +111,36 @@ export const ImageUploader: React.FC<Props> = ({ label, onUpload, isLoading = fa
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.05 }}
               transition={{ type: "spring", damping: 20 }}
-              className="relative w-full h-full p-2.5 flex items-center justify-center z-10"
+              className="relative w-full h-full p-1.5 flex items-center justify-center z-10"
             >
               <img
                 src={preview}
                 alt="Önizleme"
-                className="h-full max-w-full object-contain rounded-xl shadow-2xl shadow-black/50"
+                className="h-full max-w-full object-contain rounded-md shadow-2xl shadow-black/60"
               />
               <motion.button
-                whileHover={{ scale: 1.15, backgroundColor: 'rgba(255, 50, 50, 0.2)' }}
+                whileHover={{ scale: 1.15, backgroundColor: 'rgba(255, 50, 50, 0.15)' }}
                 whileTap={{ scale: 0.9 }}
                 onClick={removeImage}
-                className="absolute top-3 right-3 w-7 h-7 rounded-lg bg-black/50 backdrop-blur-sm text-white/30 hover:text-red-400 flex items-center justify-center transition-colors"
+                className="absolute top-2 right-2 w-5 h-5 rounded-md bg-black/60 backdrop-blur-md text-white/25 hover:text-red-400 flex items-center justify-center transition-all duration-200 border border-white/[0.06]"
               >
-                <X size={14} />
+                <X size={10} />
               </motion.button>
 
               {localLoading && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center rounded-[18px] backdrop-blur-md z-30"
+                  className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center rounded-lg backdrop-blur-xl z-30"
                 >
-                  <div className="w-16 h-[2px] bg-white/5 relative overflow-hidden rounded-full mb-4">
+                  <div className="w-16 h-[2px] bg-white/[0.04] relative overflow-hidden rounded-full mb-3">
                     <motion.div
                       animate={{ x: [-64, 64] }}
                       transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-[#c5a059] to-transparent"
                     />
                   </div>
-                  <span className="text-[8px] text-[#c5a059]/80 font-bold tracking-[0.4em] uppercase">Yükleniyor</span>
+                  <span className="text-[7px] text-[#c5a059]/70 font-bold tracking-[0.4em] uppercase">Yükleniyor</span>
                 </motion.div>
               )}
             </motion.div>
@@ -150,17 +150,17 @@ export const ImageUploader: React.FC<Props> = ({ label, onUpload, isLoading = fa
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex flex-col items-center gap-5 z-10"
+              className="flex items-center gap-3 z-10"
             >
               <motion.div
-                animate={isDragging ? { scale: 1.1, borderColor: 'rgba(255, 255, 255, 0.2)' } : {}}
-                className="w-12 h-12 rounded-xl bg-white/[0.02] border border-white/[0.06] flex items-center justify-center text-white/30 group-hover:text-white/60 transition-all duration-300 group-hover:bg-white/[0.04]"
+                animate={isDragging ? { scale: 1.15, borderColor: 'rgba(197, 160, 89, 0.3)' } : {}}
+                className="w-9 h-9 rounded-lg bg-white/[0.02] border border-white/[0.05] flex items-center justify-center text-white/20 group-hover:text-white/50 group-hover:border-white/[0.1] group-hover:bg-white/[0.04] transition-all duration-400 flex-shrink-0"
               >
-                <ImageIcon size={20} />
+                <ImageIcon size={16} strokeWidth={1.5} />
               </motion.div>
-              <div className="text-center space-y-1.5">
-                <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em] group-hover:text-white/60 transition-colors duration-300">Kaynak Seç</p>
-                <p className="text-[9px] text-white/8 font-medium">veya sürükle-bırak</p>
+              <div className="text-left space-y-0.5">
+                <p className="text-[9px] font-bold text-white/30 uppercase tracking-[0.15em] group-hover:text-white/55 transition-colors duration-400">Kaynak Seç</p>
+                <p className="text-[7px] text-white/[0.08] font-medium group-hover:text-white/15 transition-colors duration-400">veya sürükle-bırak</p>
               </div>
             </motion.div>
           )}
