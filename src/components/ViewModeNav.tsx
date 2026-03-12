@@ -18,16 +18,16 @@ const studioTabs: ViewTab[] = [
   {
     key: "front",
     path: "/",
-    label: "Ön Görünüm",
-    sublabel: "Editoryal Çekim",
+    label: "Editoryal Ön",
+    sublabel: "Studio Vogue Shot",
     icon: <Eye size={16} />,
     color: "#D4AF37",
   },
   {
     key: "back",
     path: "/back",
-    label: "Arka Görünüm",
-    sublabel: "Detaylı Çekim",
+    label: "Editoryal Arka",
+    sublabel: "Locked Back Angle",
     icon: <RotateCcw size={16} />,
     color: "#D4AF37",
   },
@@ -35,7 +35,7 @@ const studioTabs: ViewTab[] = [
     key: "closeup",
     path: "/closeup",
     label: "Yakın Plan",
-    sublabel: "Detay Odağı",
+    sublabel: "Couture Detail",
     icon: <Focus size={16} />,
     color: "#D4AF37",
   },
@@ -148,7 +148,7 @@ export const ViewSubTabs: React.FC<ViewSubTabsProps> = ({ shootMode }) => {
             </span>
             <div className="text-left">
               <p className="text-[11px] font-medium leading-tight">Mekan Çekimi</p>
-              <p className="text-[9px] text-gray-500 font-normal">Dış Mekan Editoryal</p>
+              <p className="text-[9px] text-gray-500 font-normal">Vogue Outdoor Editorial</p>
             </div>
           </button>
           <button
@@ -163,8 +163,8 @@ export const ViewSubTabs: React.FC<ViewSubTabsProps> = ({ shootMode }) => {
               <Focus size={16} />
             </span>
             <div className="text-left">
-              <p className="text-[11px] font-medium leading-tight">Yakın Plan</p>
-              <p className="text-[9px] text-gray-500 font-normal">Dış Mekan Arka Plan</p>
+              <p className="text-[11px] font-medium leading-tight">Zemin Üretici</p>
+              <p className="text-[9px] text-gray-500 font-normal">Luxury Landscape Plato</p>
             </div>
           </button>
         </>
