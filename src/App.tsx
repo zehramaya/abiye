@@ -23,7 +23,7 @@ const MainHeader: React.FC<{ falKey: string }> = ({ falKey }) => (
   <header className="h-16 border-b border-white/10 flex items-center justify-between px-6 bg-black/40 backdrop-blur-md z-50">
     <div className="flex items-center space-x-3">
       <div className="flex flex-col">
-        <h1 className="font-serif text-2xl tracking-widest text-[#D4AF37] uppercase leading-none">Fashion Master</h1>
+        <h1 className="font-serif text-2xl tracking-widest text-[#D4AF37] uppercase leading-none">ABİYE Fashion Master</h1>
         <span className="text-[10px] tracking-[0.3em] text-gray-400 font-light mt-1 uppercase">Haute Couture Studio</span>
       </div>
     </div>
